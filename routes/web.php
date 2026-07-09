@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BudgetItemController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
@@ -25,6 +26,15 @@ Route::middleware(['auth', 'verified', 'role:super-admin|admin|organizador'])->p
     Route::get('events/{event}/stats', [EventController::class, 'stats'])->name('events.stats');
     Route::resource('events', EventController::class)->except('show');
     Route::resource('events.invitations', InvitationController::class)->shallow()->except('show');
+
+    // Presupuesto por evento (gastos: estimado vs real + pagos)
+    Route::get('events/{event}/budget',        [BudgetItemController::class, 'index'])->name('events.budget.index');
+    Route::get('events/{event}/budget/create', [BudgetItemController::class, 'create'])->name('events.budget.create');
+    Route::post('events/{event}/budget',       [BudgetItemController::class, 'store'])->name('events.budget.store');
+    Route::get('budget/{budgetItem}/edit',     [BudgetItemController::class, 'edit'])->name('budget.edit');
+    Route::put('budget/{budgetItem}',          [BudgetItemController::class, 'update'])->name('budget.update');
+    Route::delete('budget/{budgetItem}',       [BudgetItemController::class, 'destroy'])->name('budget.destroy');
+
     Route::resource('templates', TemplateController::class)->except('show');
 
     // Gestión de usuarios de la empresa (admin de empresa / super-admin)

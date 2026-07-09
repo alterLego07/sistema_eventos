@@ -34,6 +34,7 @@ class UpdateEventRequest extends FormRequest
             'template_id' => ['nullable', 'exists:templates,id'],
             'cover_image' => ['nullable', 'image', 'max:2048'],
             'status' => ['nullable', 'in:draft,published'],
+            'currency' => ['nullable', 'in:MXN,USD,EUR,COP,ARS,CLP,PEN,BRL,GBP'],
         ];
     }
 

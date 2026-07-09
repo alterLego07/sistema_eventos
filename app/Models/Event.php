@@ -38,6 +38,11 @@ use Illuminate\Support\Carbon;
  * @property-read int $pending_count
  * @property-read float $confirmation_rate
  * @property-read array $merged_template_config
+ * @property-read float $budget_estimated_total
+ * @property-read float $budget_actual_total
+ * @property-read float $budget_paid_total
+ * @property-read float $budget_pending_total
+ * @property-read float $budget_variance
  *
  * @method static Builder|Event published()
  * @method static Builder|Event upcoming()
@@ -67,6 +72,7 @@ class Event extends Model
         'settings',
         'template_config',
         'status',
+        'currency',
     ];
 
     /**
@@ -109,6 +115,14 @@ class Event extends Model
     public function invitations(): HasMany
     {
         return $this->hasMany(Invitation::class);
+    }
+
+    /**
+     * Get the budget items (expense lines) for the event.
+     */
+    public function budgetItems(): HasMany
+    {
+        return $this->hasMany(BudgetItem::class);
     }
 
     /* ------------------------------------------------------------------ */
@@ -254,6 +268,67 @@ class Event extends Model
 
                 return array_replace_recursive($baseConfig, $eventOverrides);
             },
+        );
+    }
+
+    /* ------------------------------------------------------------------ */
+    /*  Budget accessors                                                   */
+    /* ------------------------------------------------------------------ */
+
+    /**
+     * Total estimated (planned) cost across all budget items.
+     */
+    protected function budgetEstimatedTotal(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): float => (float) $this->budgetItems()->sum('estimated_amount'),
+        );
+    }
+
+    /**
+     * Total actual (real) cost recorded across all budget items.
+     * NULL actual amounts are ignored by SUM.
+     */
+    protected function budgetActualTotal(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): float => (float) $this->budgetItems()->sum('actual_amount'),
+        );
+    }
+
+    /**
+     * Total already paid (uses actual amount, falling back to estimated).
+     */
+    protected function budgetPaidTotal(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): float => (float) $this->budgetItems()
+                ->where('paid', true)
+                ->selectRaw('COALESCE(SUM(COALESCE(actual_amount, estimated_amount)), 0) as total')
+                ->value('total'),
+        );
+    }
+
+    /**
+     * Total still pending payment (uses actual amount, falling back to estimated).
+     */
+    protected function budgetPendingTotal(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): float => (float) $this->budgetItems()
+                ->where('paid', false)
+                ->selectRaw('COALESCE(SUM(COALESCE(actual_amount, estimated_amount)), 0) as total')
+                ->value('total'),
+        );
+    }
+
+    /**
+     * Variance between estimated and actual (positive = under budget).
+     */
+    protected function budgetVariance(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): float => $this->budget_estimated_total - $this->budget_actual_total,
         );
     }
 }

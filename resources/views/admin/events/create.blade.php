@@ -81,6 +81,15 @@
                         </select>
                     </div>
 
+                    <div>
+                        <label class="form-label" for="currency">Moneda (presupuesto)</label>
+                        <select id="currency" name="currency" class="form-input">
+                            @foreach(['MXN','USD','EUR','COP','ARS','CLP','PEN','BRL','GBP'] as $cur)
+                                <option value="{{ $cur }}" {{ old('currency', 'MXN') === $cur ? 'selected' : '' }}>{{ $cur }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
                     <div class="sm:col-span-2">
                         <label class="form-label" for="cover_image">Imagen de portada</label>
                         <input id="cover_image" type="file" name="cover_image" accept="image/*"

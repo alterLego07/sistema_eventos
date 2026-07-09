@@ -47,11 +47,20 @@ class RolesAndPermissionsSeeder extends Seeder
             'users.delete',
         ];
 
+        // --- Permisos de Presupuesto ---
+        $budgetPermissions = [
+            'budget.view',
+            'budget.create',
+            'budget.edit',
+            'budget.delete',
+        ];
+
         $allPermissions = array_merge(
             $eventPermissions,
             $invitationPermissions,
             $templatePermissions,
             $userPermissions,
+            $budgetPermissions,
         );
 
         foreach ($allPermissions as $permission) {
@@ -68,6 +77,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $invitationPermissions,
             $templatePermissions,
             $userPermissions,
+            $budgetPermissions,
         ));
 
         // --- Rol: organizador (solo sus propios eventos e invitaciones) ---
@@ -81,6 +91,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'invitations.edit',
             'invitations.export',
             'templates.view',
+            'budget.view',
+            'budget.create',
+            'budget.edit',
         ]);
     }
 }
