@@ -10,7 +10,7 @@
         </a>
     </x-slot>
 
-    <div class="max-w-2xl">
+    <div class="max-w-2xl mx-auto">
         <div class="bg-white rounded-2xl border border-surface-100 shadow-sm overflow-hidden">
             <div class="px-6 py-5 border-b border-surface-100">
                 <h2 class="font-semibold text-surface-900">{{ $event->name }}</h2>
@@ -90,8 +90,22 @@
                     <div>
                         <label class="form-label" for="currency">Moneda (presupuesto)</label>
                         <select id="currency" name="currency" class="form-input">
-                            @foreach(['MXN','USD','EUR','COP','ARS','CLP','PEN','BRL','GBP'] as $cur)
-                                <option value="{{ $cur }}" {{ old('currency', $event->currency ?? 'MXN') === $cur ? 'selected' : '' }}>{{ $cur }}</option>
+                            @php
+                                $currencies = [
+                                    'PYG' => 'PYG — Guaraní (Gs.)',
+                                    'MXN' => 'MXN — Peso Mexicano',
+                                    'USD' => 'USD — Dólar',
+                                    'EUR' => 'EUR — Euro',
+                                    'ARS' => 'ARS — Peso Argentino',
+                                    'COP' => 'COP — Peso Colombiano',
+                                    'CLP' => 'CLP — Peso Chileno',
+                                    'PEN' => 'PEN — Sol Peruano',
+                                    'BRL' => 'BRL — Real Brasileño',
+                                    'GBP' => 'GBP — Libra Esterlina',
+                                ];
+                            @endphp
+                            @foreach($currencies as $code => $label)
+                                <option value="{{ $code }}" {{ old('currency', $event->currency ?? 'PYG') === $code ? 'selected' : '' }}>{{ $label }}</option>
                             @endforeach
                         </select>
                     </div>

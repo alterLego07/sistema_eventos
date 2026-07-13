@@ -30,6 +30,9 @@
                             <th>Usuario</th>
                             <th>Correo</th>
                             <th>Rol</th>
+                            @if(auth()->user()->hasRole('super-admin'))
+                                <th>Empresa</th>
+                            @endif
                             <th class="text-right">Acciones</th>
                         </tr>
                     </thead>
@@ -57,6 +60,11 @@
                                         </span>
                                     @endforeach
                                 </td>
+                                @if(auth()->user()->hasRole('super-admin'))
+                                    <td class="text-sm text-surface-500">
+                                        {{ $user->company?->name ?? '—' }}
+                                    </td>
+                                @endif
                                 <td>
                                     <div class="flex items-center justify-end gap-1">
                                         <a href="{{ route('admin.users.edit', $user) }}"

@@ -1,7 +1,7 @@
 <x-admin-layout>
     <x-slot name="title">Editar usuario</x-slot>
 
-    <div class="max-w-2xl">
+    <div class="max-w-2xl mx-auto">
         <div class="bg-white rounded-2xl border border-surface-100 shadow-sm overflow-hidden">
             <div class="px-6 py-5 border-b border-surface-100">
                 <h2 class="font-semibold text-surface-900">{{ $user->name }}</h2>
@@ -12,6 +12,21 @@
                 @csrf @method('PUT')
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    @if(auth()->user()->hasRole('super-admin') && $companies->isNotEmpty())
+                        <div class="sm:col-span-2">
+                            <label class="form-label" for="company_id">Empresa</label>
+                            <select id="company_id" name="company_id" class="form-input @error('company_id') border-danger-500 @enderror">
+                                <option value="">— Sin empresa (super-admin) —</option>
+                                @foreach($companies as $company)
+                                    <option value="{{ $company->id }}" {{ old('company_id', $user->company_id) == $company->id ? 'selected' : '' }}>
+                                        {{ $company->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('company_id') <p class="mt-1 text-xs text-danger-600">{{ $message }}</p> @enderror
+                        </div>
+                    @endif
+
                     <div class="sm:col-span-2">
                         <label class="form-label" for="name">Nombre <span class="text-danger-500">*</span></label>
                         <input id="name" type="text" name="name" value="{{ old('name', $user->name) }}"

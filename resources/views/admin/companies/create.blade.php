@@ -1,7 +1,7 @@
 <x-admin-layout>
     <x-slot name="title">Nueva empresa</x-slot>
 
-    <div class="max-w-2xl">
+    <div class="max-w-2xl mx-auto">
         <form method="POST" action="{{ route('admin.companies.store') }}" enctype="multipart/form-data" class="space-y-6">
             @csrf
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Routing\Attributes\Middleware;
 use Illuminate\Support\Facades\Auth;
@@ -19,8 +20,14 @@ use Illuminate\Support\Facades\Hash;
  */
 class UserController extends Controller
 {
+    protected function isSuperAdmin(): bool
+    {
+        return Auth::user()->hasRole('super-admin');
+    }
+
     /**
      * The company_id the current request operates within.
+     * Super-admin no tiene empresa propia; gestiona a través del form.
      */
     protected function companyId(): ?int
     {
@@ -29,9 +36,15 @@ class UserController extends Controller
 
     /**
      * Ensure the target user belongs to the current company.
+     * Super-admin puede editar cualquier usuario excepto otros super-admins.
      */
     protected function authorizeSameCompany(User $user): void
     {
+        if ($this->isSuperAdmin()) {
+            abort_if($user->hasRole('super-admin') && $user->id !== Auth::id(), 403);
+            return;
+        }
+
         abort_unless($user->company_id === $this->companyId() && $this->companyId() !== null, 403);
         abort_if($user->hasRole('super-admin'), 403);
     }
@@ -39,10 +52,13 @@ class UserController extends Controller
     #[Middleware('permission:users.view')]
     public function index()
     {
-        $users = User::where('company_id', $this->companyId())
-            ->with('roles')
-            ->latest()
-            ->paginate(15);
+        $query = User::with('roles', 'company')->latest();
+
+        if (! $this->isSuperAdmin()) {
+            $query->where('company_id', $this->companyId());
+        }
+
+        $users = $query->paginate(15);
 
         return view('admin.users.index', compact('users'));
     }
@@ -50,9 +66,10 @@ class UserController extends Controller
     #[Middleware('permission:users.create')]
     public function create()
     {
-        $roles = StoreUserRequest::assignableRoles();
+        $roles     = StoreUserRequest::assignableRoles();
+        $companies = $this->isSuperAdmin() ? Company::orderBy('name')->get(['id', 'name']) : collect();
 
-        return view('admin.users.create', compact('roles'));
+        return view('admin.users.create', compact('roles', 'companies'));
     }
 
     #[Middleware('permission:users.create')]
@@ -60,11 +77,15 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
+        $companyId = $this->isSuperAdmin()
+            ? ($data['company_id'] ?? null)
+            : $this->companyId();
+
         $user = User::create([
-            'company_id' => $this->companyId(),
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'company_id'        => $companyId,
+            'name'              => $data['name'],
+            'email'             => $data['email'],
+            'password'          => Hash::make($data['password']),
             'email_verified_at' => now(),
         ]);
 
@@ -79,10 +100,11 @@ class UserController extends Controller
     {
         $this->authorizeSameCompany($user);
 
-        $roles = StoreUserRequest::assignableRoles();
+        $roles      = StoreUserRequest::assignableRoles();
         $currentRole = $user->roles->pluck('name')->first();
+        $companies  = $this->isSuperAdmin() ? Company::orderBy('name')->get(['id', 'name']) : collect();
 
-        return view('admin.users.edit', compact('user', 'roles', 'currentRole'));
+        return view('admin.users.edit', compact('user', 'roles', 'currentRole', 'companies'));
     }
 
     #[Middleware('permission:users.edit')]
@@ -92,8 +114,12 @@ class UserController extends Controller
 
         $data = $request->validated();
 
-        $user->name = $data['name'];
+        $user->name  = $data['name'];
         $user->email = $data['email'];
+
+        if ($this->isSuperAdmin() && array_key_exists('company_id', $data)) {
+            $user->company_id = $data['company_id'] ?: null;
+        }
 
         if (! empty($data['password'])) {
             $user->password = Hash::make($data['password']);

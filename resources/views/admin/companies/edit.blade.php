@@ -1,7 +1,7 @@
 <x-admin-layout>
     <x-slot name="title">Editar empresa</x-slot>
 
-    <div class="max-w-2xl space-y-6">
+    <div class="max-w-2xl mx-auto space-y-6">
         <div class="bg-white rounded-2xl border border-surface-100 shadow-sm overflow-hidden">
             <div class="px-6 py-5 border-b border-surface-100 flex items-center justify-between">
                 <div>

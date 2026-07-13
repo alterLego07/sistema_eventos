@@ -1,7 +1,7 @@
 <x-admin-layout>
     <x-slot name="title">Nueva invitación — {{ $event->name }}</x-slot>
 
-    <div class="max-w-xl">
+    <div class="max-w-xl mx-auto">
         <div class="bg-white rounded-2xl border border-surface-100 shadow-sm overflow-hidden">
             <div class="px-6 py-5 border-b border-surface-100">
                 <h2 class="font-semibold text-surface-900">Datos del invitado</h2>

@@ -89,19 +89,21 @@ class Invitation extends Model
     {
         static::creating(function (Invitation $invitation): void {
             // Inherit tenant from the parent event when not already resolved
-            // (e.g. created by the super-admin, who has no company of their own).
+            // (e.g. created via Tinker, seeders, o super-admin sin empresa propia).
+            // El controller siempre debe pasar company_id explícitamente para
+            // evitar este SELECT adicional bajo carga concurrente en MySQL.
             if (empty($invitation->company_id) && ! empty($invitation->event_id)) {
                 $invitation->company_id = Event::withoutGlobalScope(CompanyScope::class)
                     ->whereKey($invitation->event_id)
                     ->value('company_id');
             }
 
+            // Generamos el token sin pre-verificar unicidad con SELECT.
+            // Si colisiona (62^10 ≈ 839 billones de combinaciones), la restricción
+            // UNIQUE lo captura y save() lanza UniqueConstraintViolationException.
+            // El controller o el llamador deben manejar ese caso si es crítico.
             if (empty($invitation->token)) {
-                do {
-                    $token = Str::random(10);
-                } while (static::withoutGlobalScopes()->where('token', $token)->exists());
-
-                $invitation->token = $token;
+                $invitation->token = Str::random(10);
             }
         });
     }

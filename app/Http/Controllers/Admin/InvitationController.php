@@ -27,7 +27,12 @@ class InvitationController extends Controller
     #[Middleware('permission:invitations.create')]
     public function store(StoreInvitationRequest $request, Event $event)
     {
-        $event->invitations()->create($request->validated());
+        // Pasamos company_id directamente desde el evento para evitar que
+        // booted() haga un SELECT adicional a events durante el INSERT,
+        // lo cual puede causar lock contention en MySQL bajo carga.
+        $event->invitations()->create(
+            array_merge($request->validated(), ['company_id' => $event->company_id])
+        );
 
         return redirect()->route('admin.events.invitations.index', $event)
             ->with('success', 'Invitación creada correctamente.');

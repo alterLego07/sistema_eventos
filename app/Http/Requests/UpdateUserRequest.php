@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
@@ -24,12 +25,18 @@ class UpdateUserRequest extends FormRequest
     {
         $userId = $this->route('user')->id;
 
-        return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
+        $rules = [
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
             'password' => ['nullable', 'confirmed', Password::defaults()],
-            'role' => ['required', Rule::in(StoreUserRequest::assignableRoles())],
+            'role'     => ['required', Rule::in(StoreUserRequest::assignableRoles())],
         ];
+
+        if (Auth::user()->hasRole('super-admin')) {
+            $rules['company_id'] = ['nullable', 'exists:companies,id'];
+        }
+
+        return $rules;
     }
 
     /**
