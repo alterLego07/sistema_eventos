@@ -61,9 +61,10 @@
             'icon' => '❀',
             'title' => 'Recepción',
             'name' => $config['reception']['name'] ?? 'Quinta Tio Toño',
-            'description' => $config['reception']['description'] ?? 'Brindis, almuerzo y baile.',
+            'description' => $config['reception']['description'] ?? 'Domingo 13 de septiembre · 11:00 hrs a 17:00 hrs.',
+            'description2' => $config['reception']['description2'] ?? 'Brindis, almuerzo y baile.',
             'extra' => $config['reception']['dress_code'] ?? 'Dress code: Tipo Cóctel',
-            'map_url' => $config['reception']['location_url'] ?? 'https://maps.app.goo.gl/8dFDuVea9j8uHJ4d8',
+            'map_url' => $config['reception']['location_url'] ?? 'https://maps.app.goo.gl/K3GbabUgXGvYvevx8',
             'button' => 'Ver ubicación',
         ],
     ];
@@ -586,6 +587,10 @@
 
                         @if(!empty($detail['description']))
                             <p>{{ $detail['description'] }}</p>
+                        @endif
+
+                        @if(!empty($detail['description2']))
+                            <p>{{ $detail['description2'] }}</p>
                         @endif
 
                         @if(!empty($detail['extra']))
