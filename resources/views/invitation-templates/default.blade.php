@@ -63,7 +63,7 @@
             'name' => $config['reception']['name'] ?? 'Quinta Tio Toño',
             'description' => $config['reception']['description'] ?? 'Brindis, almuerzo y baile.',
             'extra' => $config['reception']['dress_code'] ?? 'Dress code: Tipo Cóctel',
-            'map_url' => $config['reception']['location_url'] ?? null,
+            'map_url' => $config['reception']['location_url'] ?? 'https://maps.app.goo.gl/8dFDuVea9j8uHJ4d8',
             'button' => 'Ver ubicación',
         ],
     ];
@@ -75,13 +75,13 @@
         ?? 'Tu presencia es nuestro mejor regalo. Pero si deseás tener un detalle con nosotros, podés hacerlo mediante una transferencia bancaria.';
 
     $bankData = $config['bank'] ?? [
-        'bank_name' => 'Banco Ejemplo',
-        'account_holder' => 'Josefina Bogado',
-        'document' => '0000000',
+        'bank_name' => 'Ueno Bank',
+        'account_holder' => 'Luis Emilio Garcia',
+        'document' => '4484762',
         'account_type' => 'Caja de ahorro',
-        'account_number' => '0000000000',
+        'account_number' => '',
         'currency' => 'Guaraníes',
-        'alias' => null,
+        'alias' => '4484762',
     ];
 
 
