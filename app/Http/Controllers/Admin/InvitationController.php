@@ -30,9 +30,10 @@ class InvitationController extends Controller
         // Pasamos company_id directamente desde el evento para evitar que
         // booted() haga un SELECT adicional a events durante el INSERT,
         // lo cual puede causar lock contention en MySQL bajo carga.
-        $event->invitations()->create(
-            array_merge($request->validated(), ['company_id' => $event->company_id])
-        );
+        $event->invitations()->create(array_merge(
+            $request->validated(),
+            ['company_id' => $event->company_id, 'invited' => $request->boolean('invited')]
+        ));
 
         return redirect()->route('admin.events.invitations.index', $event)
             ->with('success', 'Invitación creada correctamente.');
@@ -54,9 +55,10 @@ class InvitationController extends Controller
             'email'          => ['nullable', 'email'],
             'table_number'   => ['nullable', 'integer', 'min:1'],
             'allowed_guests' => ['required', 'integer', 'min:1', 'max:20'],
+            'invited'        => ['sometimes', 'boolean'],
         ]);
 
-        $invitation->update($validated);
+        $invitation->update($validated + ['invited' => $request->boolean('invited')]);
 
         return redirect()->route('admin.events.invitations.index', $invitation->event_id)
             ->with('success', 'Invitación actualizada correctamente.');
@@ -70,5 +72,31 @@ class InvitationController extends Controller
 
         return redirect()->route('admin.events.invitations.index', $eventId)
             ->with('success', 'Invitación eliminada correctamente.');
+    }
+
+    /**
+     * Confirma o rechaza la asistencia en nombre del invitado.
+     *
+     * Solo admin/super-admin, para los casos en que el invitado no puede
+     * usar el enlace público de confirmación.
+     */
+    #[Middleware('role:super-admin|admin')]
+    public function confirmByAdmin(Request $request, Invitation $invitation)
+    {
+        $validated = $request->validate([
+            'confirmed'        => ['required', 'boolean'],
+            'confirmed_guests' => ['required_if:confirmed,1', 'integer', 'min:1', "max:{$invitation->allowed_guests}"],
+        ]);
+
+        $attending = (bool) $validated['confirmed'];
+
+        $invitation->update([
+            'confirmed'        => $attending,
+            'confirmed_guests' => $attending ? (int) $validated['confirmed_guests'] : 0,
+            'confirmed_at'     => now(),
+        ]);
+
+        return redirect()->route('admin.events.invitations.index', $invitation->event_id)
+            ->with('success', 'Asistencia registrada por el administrador.');
     }
 }

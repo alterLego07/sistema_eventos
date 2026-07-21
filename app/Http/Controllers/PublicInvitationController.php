@@ -31,7 +31,7 @@ class PublicInvitationController extends Controller
             ->with('event')
             ->firstOrFail();
 
-        if ($invitation->confirmed) {
+        if ($invitation->confirmed_at) {
             return redirect()->route('invitation.show', $token)
                 ->with('rsvp_already', true);
         }

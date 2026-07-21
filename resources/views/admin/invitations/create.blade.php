@@ -51,6 +51,12 @@
                                min="1" max="20">
                         @error('allowed_guests') <p class="mt-1 text-xs text-danger-600">{{ $message }}</p> @enderror
                     </div>
+
+                    <div class="sm:col-span-2 flex items-center gap-2">
+                        <input id="invited" type="checkbox" name="invited" value="1" {{ old('invited') ? 'checked' : '' }}
+                               class="w-4 h-4 rounded border-surface-300 text-brand-600 focus:ring-brand-500 cursor-pointer">
+                        <label for="invited" class="text-sm text-surface-600 cursor-pointer select-none">Invitación ya enviada</label>
+                    </div>
                 </div>
 
                 <div class="flex items-center justify-end gap-3 pt-2 border-t border-surface-100">

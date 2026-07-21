@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? config('app.name') }}</title>
+    <title>{{ $title ?? 'Planora' }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -30,10 +30,10 @@
             <div class="w-10 h-10 rounded-2xl gradient-brand flex items-center justify-center shadow-lg">
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                          d="M8 2v4M16 2v4M3 10h18M5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"/>
                 </svg>
             </div>
-            <span class="text-white font-bold text-lg tracking-tight">{{ config('app.name') }}</span>
+            <span class="text-white font-bold text-lg tracking-tight">Planora</span>
         </div>
 
         {{-- Center illustration --}}
@@ -42,19 +42,19 @@
                  style="box-shadow: 0 20px 60px rgba(76, 110, 245, 0.35)">
                 <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                          d="M8 2v4M16 2v4M3 10h18M5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"/>
                 </svg>
             </div>
             <h2 class="text-3xl font-bold text-white leading-tight mb-4">
-                Invitaciones<br>digitales elegantes
+                Organiza cada detalle.<br>Celebra sin preocupaciones.
             </h2>
             <p class="text-surface-400 text-base max-w-sm leading-relaxed">
-                Crea, personaliza y gestiona invitaciones para tus eventos con confirmación de asistencia en tiempo real.
+                Planora reúne invitados, cronograma y presupuesto estimado vs. real en un solo ERP para planificar eventos.
             </p>
 
             {{-- Feature pills --}}
             <div class="flex flex-wrap justify-center gap-2 mt-8">
-                @foreach(['RSVP en tiempo real', 'Plantillas elegantes', 'Estadísticas', 'Cuenta regresiva'] as $feat)
+                @foreach(['Invitados y RSVP', 'Planificación del evento', 'Control de presupuesto', 'Multi-empresa y roles'] as $feat)
                     <span class="px-3 py-1.5 rounded-full text-xs font-medium text-surface-300 border border-white/10 glass">
                         {{ $feat }}
                     </span>
@@ -64,7 +64,7 @@
 
         {{-- Footer --}}
         <div class="relative z-10 text-surface-500 text-xs text-center">
-            © {{ date('Y') }} {{ config('app.name') }}
+            © {{ date('Y') }} Planora
         </div>
     </div>
 
@@ -76,10 +76,10 @@
             <div class="w-9 h-9 rounded-xl gradient-brand flex items-center justify-center">
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                          d="M8 2v4M16 2v4M3 10h18M5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"/>
                 </svg>
             </div>
-            <span class="font-bold text-surface-800 text-lg">{{ config('app.name') }}</span>
+            <span class="font-bold text-surface-800 text-lg">Planora</span>
         </div>
 
         <div class="w-full max-w-md mx-auto">

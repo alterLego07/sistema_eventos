@@ -229,40 +229,31 @@
     <section id="rsvp" class="max-w-lg mx-auto px-6 py-16">
         <div class="rsvp-card">
 
-            {{-- Already confirmed state --}}
-            @if($invitation->confirmed)
-                <div class="text-center py-6">
-                    <div class="text-5xl mb-4">🥂</div>
-                    <h2 class="text-2xl font-bold mb-2" style="font-family:'Playfair Display',serif; color:var(--gold)">
-                        ¡Hasta pronto!
-                    </h2>
-                    <p class="opacity-60 text-sm">
-                        Ya confirmaste tu asistencia con {{ $invitation->confirmed_guests }}
-                        {{ $invitation->confirmed_guests === 1 ? 'persona' : 'personas' }}.
-                    </p>
-                    <p class="opacity-40 text-xs mt-2">
-                        {{ $invitation->confirmed_at?->format('d/m/Y') }}
-                    </p>
-                </div>
-
-            {{-- RSVP success flash --}}
-            @elseif(session('rsvp_confirmed'))
-                <div class="text-center py-6">
-                    <div class="text-5xl mb-4">🎊</div>
-                    <h2 class="text-2xl font-bold mb-2" style="font-family:'Playfair Display',serif; color:var(--gold)">
-                        ¡Confirmado!
-                    </h2>
-                    <p class="opacity-60">Nos vemos el {{ $event->formatted_date }}.</p>
-                </div>
-
-            @elseif(session('rsvp_declined'))
-                <div class="text-center py-6">
-                    <div class="text-5xl mb-4">💐</div>
-                    <h2 class="text-2xl font-bold mb-3" style="font-family:'Playfair Display',serif">
-                        Gracias por avisarnos
-                    </h2>
-                    <p class="opacity-60">Lamentamos que no puedas acompañarnos.</p>
-                </div>
+            {{-- Already responded state --}}
+            @if($invitation->confirmed_at)
+                @if($invitation->confirmed)
+                    <div class="text-center py-6">
+                        <div class="text-5xl mb-4">🥂</div>
+                        <h2 class="text-2xl font-bold mb-2" style="font-family:'Playfair Display',serif; color:var(--gold)">
+                            ¡Hasta pronto!
+                        </h2>
+                        <p class="opacity-60 text-sm">
+                            Ya confirmaste tu asistencia con {{ $invitation->confirmed_guests }}
+                            {{ $invitation->confirmed_guests === 1 ? 'persona' : 'personas' }}.
+                        </p>
+                        <p class="opacity-40 text-xs mt-2">
+                            {{ $invitation->confirmed_at->format('d/m/Y') }}
+                        </p>
+                    </div>
+                @else
+                    <div class="text-center py-6">
+                        <div class="text-5xl mb-4">💐</div>
+                        <h2 class="text-2xl font-bold mb-3" style="font-family:'Playfair Display',serif">
+                            Gracias por avisarnos
+                        </h2>
+                        <p class="opacity-60">Lamentamos que no puedas acompañarnos.</p>
+                    </div>
+                @endif
 
             {{-- RSVP Form --}}
             @else

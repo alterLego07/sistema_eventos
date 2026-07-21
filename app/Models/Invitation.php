@@ -55,6 +55,7 @@ class Invitation extends Model
         'email',
         'table_number',
         'allowed_guests',
+        'invited',
         'confirmed',
         'confirmed_guests',
         'confirmed_at',
@@ -71,6 +72,7 @@ class Invitation extends Model
     protected function casts(): array
     {
         return [
+            'invited' => 'boolean',
             'confirmed' => 'boolean',
             'confirmed_at' => 'datetime',
         ];
@@ -137,7 +139,7 @@ class Invitation extends Model
      */
     public function scopePending(Builder $query): Builder
     {
-        return $query->where('confirmed', false);
+        return $query->whereNull('confirmed_at');
     }
 
     /* ------------------------------------------------------------------ */
@@ -160,7 +162,11 @@ class Invitation extends Model
     protected function statusLabel(): Attribute
     {
         return Attribute::make(
-            get: fn (): string => $this->confirmed ? 'Confirmado' : 'Pendiente',
+            get: fn (): string => match (true) {
+                ! $this->confirmed_at => 'Pendiente',
+                $this->confirmed => 'Confirmado',
+                default => 'No asistirá',
+            },
         );
     }
 }

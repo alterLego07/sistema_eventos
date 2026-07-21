@@ -30,6 +30,7 @@ class StoreInvitationRequest extends FormRequest
             'email' => ['nullable', 'email'],
             'table_number' => ['nullable', 'integer', 'min:1'],
             'allowed_guests' => ['required', 'integer', 'min:1', 'max:20'],
+            'invited' => ['sometimes', 'boolean'],
         ];
     }
 

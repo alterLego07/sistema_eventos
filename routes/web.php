@@ -26,6 +26,8 @@ Route::middleware(['auth', 'verified', 'role:super-admin|admin|organizador'])->p
     Route::get('events/{event}/stats', [EventController::class, 'stats'])->name('events.stats');
     Route::resource('events', EventController::class)->except('show');
     Route::resource('events.invitations', InvitationController::class)->shallow()->except('show');
+    Route::post('invitations/{invitation}/confirm', [InvitationController::class, 'confirmByAdmin'])
+        ->name('invitations.confirm');
 
     // Presupuesto por evento (gastos: estimado vs real + pagos)
     Route::get('events/{event}/budget',        [BudgetItemController::class, 'index'])->name('events.budget.index');

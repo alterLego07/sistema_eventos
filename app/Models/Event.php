@@ -230,7 +230,7 @@ class Event extends Model
     protected function pendingCount(): Attribute
     {
         return Attribute::make(
-            get: fn (): int => $this->invitations()->where('confirmed', false)->count(),
+            get: fn (): int => $this->invitations()->whereNull('confirmed_at')->count(),
         );
     }
 

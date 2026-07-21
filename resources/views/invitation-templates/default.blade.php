@@ -708,30 +708,24 @@
                 </article>
 
                 <article class="form-card reveal">
-                    @if($invitation->confirmed ?? false)
-                        <div class="rsvp-status">
-                            <div class="rsvp-status__icon">🥂</div>
-                            <h3>¡Hasta pronto!</h3>
-                            <p>
-                                Ya confirmaste tu asistencia con {{ $invitation->confirmed_guests }}
-                                {{ $invitation->confirmed_guests === 1 ? 'persona' : 'personas' }}.
-                            </p>
-                            @if($invitation->confirmed_at ?? null)
-                                <p>{{ $invitation->confirmed_at?->format('d/m/Y') }}</p>
-                            @endif
-                        </div>
-                    @elseif(session('rsvp_confirmed'))
-                        <div class="rsvp-status">
-                            <div class="rsvp-status__icon">🎊</div>
-                            <h3>¡Confirmado!</h3>
-                            <p>Nos vemos el {{ $formattedDate }}.</p>
-                        </div>
-                    @elseif(session('rsvp_declined'))
-                        <div class="rsvp-status">
-                            <div class="rsvp-status__icon">💐</div>
-                            <h3>Gracias por avisarnos</h3>
-                            <p>Lamentamos que no puedas acompañarnos.</p>
-                        </div>
+                    @if($invitation->confirmed_at ?? null)
+                        @if($invitation->confirmed)
+                            <div class="rsvp-status">
+                                <div class="rsvp-status__icon">🥂</div>
+                                <h3>¡Hasta pronto!</h3>
+                                <p>
+                                    Ya confirmaste tu asistencia con {{ $invitation->confirmed_guests }}
+                                    {{ $invitation->confirmed_guests === 1 ? 'persona' : 'personas' }}.
+                                </p>
+                                <p>{{ $invitation->confirmed_at->format('d/m/Y') }}</p>
+                            </div>
+                        @else
+                            <div class="rsvp-status">
+                                <div class="rsvp-status__icon">💐</div>
+                                <h3>Gracias por avisarnos</h3>
+                                <p>Lamentamos que no puedas acompañarnos.</p>
+                            </div>
+                        @endif
                     @else
                         @if($errors->any())
                             <div class="form-error">

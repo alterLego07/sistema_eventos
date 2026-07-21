@@ -71,6 +71,12 @@
                                class="form-input @error('allowed_guests') border-danger-500 @enderror" min="1" max="20">
                         @error('allowed_guests') <p class="mt-1 text-xs text-danger-600">{{ $message }}</p> @enderror
                     </div>
+
+                    <div class="sm:col-span-2 flex items-center gap-2">
+                        <input id="invited" type="checkbox" name="invited" value="1" {{ old('invited', $invitation->invited) ? 'checked' : '' }}
+                               class="w-4 h-4 rounded border-surface-300 text-brand-600 focus:ring-brand-500 cursor-pointer">
+                        <label for="invited" class="text-sm text-surface-600 cursor-pointer select-none">Invitación ya enviada</label>
+                    </div>
                 </div>
 
                 <div class="flex items-center justify-between pt-2 border-t border-surface-100">
@@ -84,6 +90,29 @@
                     </div>
                 </div>
             </form>
+
+            @role('super-admin|admin')
+                <div class="px-6 py-5 border-t border-surface-100">
+                    <p class="text-xs text-surface-400 font-medium uppercase tracking-wide mb-3">
+                        Confirmar en nombre del invitado
+                    </p>
+                    <div class="flex flex-wrap gap-3" x-data="{ guests: {{ $invitation->confirmed_guests ?: $invitation->allowed_guests }} }">
+                        <form method="POST" action="{{ route('admin.invitations.confirm', $invitation) }}" class="flex items-center gap-2">
+                            @csrf
+                            <input type="hidden" name="confirmed" value="1">
+                            <input type="number" name="confirmed_guests" x-model="guests" min="1" max="{{ $invitation->allowed_guests }}"
+                                   class="form-input w-20 py-1.5 text-sm">
+                            <button type="submit" class="btn btn-secondary btn-sm text-success-700">Marcar asistirá</button>
+                        </form>
+                        <form method="POST" action="{{ route('admin.invitations.confirm', $invitation) }}"
+                              x-data @submit.prevent="if(confirm('¿Marcar que este invitado no asistirá?')) $el.submit()">
+                            @csrf
+                            <input type="hidden" name="confirmed" value="0">
+                            <button type="submit" class="btn btn-secondary btn-sm text-danger-700">Marcar no asistirá</button>
+                        </form>
+                    </div>
+                </div>
+            @endrole
         </div>
     </div>
 
